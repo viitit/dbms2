@@ -1,0 +1,33 @@
+13 Consider the following database:
+   Employee (emp_no,  name, skill, pay_rate)
+   Position (posting_no, skill)
+   Duty_allocation (posting_no, emp_no, day, shift)
+1.	Find the shift for the employee ’XYZ’:
+2.	Get count of different employee of each shift: 
+3.	Find the employee eligible to fill a position:
+4.	Find employee with the lowest pay rate:
+5.	Find the name and rate of pay of all employee who are allocated to duty:
+
+
+mysql> create table Employee(emp_no integer primary key, name varchar(50), skill varchar(50), pay_rate decimal(10,2));
+
+create table Position ( posting_no integer primary key, skill varchar(50) );
+
+CREATE TABLE Duty_allocation (     posting_no INT,     emp_no INT,     day VARCHAR(50),     shift VARCHAR(50),     PRIMARY KEY (posting_no, emp_no, day),     FOREIGN KEY (posting_no) REFERENCES Position (posting_no),     FOREIGN KEY (emp_no) REFERENCES Employee (emp_no) );
+
+INSERT INTO Employee (emp_no, name, skill, pay_rate) VALUES (1, 'John', 'Programming', 30.00),(2, 'Jane', 'Design', 25.00),(3, 'Bob', 'Programming', 28.00),(4, ‘Ron’, ‘Manager’, 24);
+
+INSERT INTO Position (posting_no, skill) VALUES (101, 'Programming'),(102, 'Design');
+
+INSERT INTO Duty_allocation (posting_no, emp_no, day, shift) VALUES (101, 1, 'Monday', 'Morning'),(102, 2, 'Tuesday', 'Afternoon'),(101, 3, 'Wednesday', 'Night');
+
+1)	SELECT shift FROM Duty_allocation WHERE emp_no = (SELECT emp_no FROM Employee WHERE name = 'John');
+
+2)	SELECT shift, COUNT(DISTINCT emp_no) AS employee_count FROM Duty_allocation GROUP BY shift;
+
+3)	SELECT emp_no, name, skill FROM Employee WHERE skill IN (SELECT skill FROM Position);
+
+4)	SELECT emp_no, name, pay_rate FROM Employee ORDER BY pay_rate LIMIT 1;
+
+5)	SELECT e.name, e.pay_rate FROM Employee e, Duty_allocation d WHERE e.emp_no = d.emp_no;
+

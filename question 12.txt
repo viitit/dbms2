@@ -1,0 +1,162 @@
+12. Consider following schema
+Book---> {ISBNNO, Title, PID(FK), Edition, Price, Quantity}
+Book_Detail---> {Bar Code,ISBNNO(FK)}
+Author---> {AuthorID, AName, Aemail}
+Publisher---> {PubID, PubName, PCity, PEmail}
+Student---> { SName, RollNo, Branch, Year, PRNNO}
+Issue---> {TRXID,PRNNO(FK),BarCode(FK), IssueDate, RetDate, Fine }
+WrittenBy--->{AuthorId(FK), ISBNNO(FK)}
+1. Display books with title having minimum 10 characters
+2. Display book titles with lowest price
+3. Display total no of books in the library
+4. Display PRNNO and Barcode of books issued and returned on same date
+5. Display PRNNO and Barcode for the books which are issued but not returned
+6. Display total fine paid by every student
+7. Display average fine collected
+
+
+
+create table Publisher(
+PID int primary key,
+PubName varchar(100),
+Pcity varchar(100),
+PEmail varchar(100));
+
+CREATE TABLE Book (
+ISBNNO VARCHAR(20) PRIMARY KEY,
+Title VARCHAR(100),
+PID INT, -- Assuming this is a foreign key referencing Publisher(PubID)
+Edition INT,
+Price DECIMAL(10, 2),
+Quantity INT
+ );
+
+CREATE TABLE Book_Detail (
+BarCode INT PRIMARY KEY,
+ISBNNO VARCHAR(20),
+FOREIGN KEY (ISBNNO) REFERENCES Book(ISBNNO)
+);
+
+CREATE TABLE Author (
+AuthorID INT PRIMARY KEY,
+AName VARCHAR(100),
+AEmail VARCHAR(100)
+);
+
+CREATE TABLE Student (
+SName VARCHAR(100),
+RollNo INT ,
+Branch VARCHAR(50),
+Year INT,
+PRNNO INT PRIMARY KEY
+ );
+
+
+CREATE TABLE WrittenBy (
+AuthorID INT,
+ISBNNO VARCHAR(20),
+FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID),
+FOREIGN KEY (ISBNNO) REFERENCES Book(ISBNNO)
+ );
+
+
+CREATE TABLE Issue (
+TRXID INT PRIMARY KEY,
+PRNNO INT,
+BarCode INT,
+IssueDate DATE,
+RetDate DATE,
+Fine DECIMAL(10, 2),
+FOREIGN KEY (PRNNO) REFERENCES Student(PRNNO),
+FOREIGN KEY (BarCode) REFERENCES Book_Detail(BarCode)
+);
+
+
+
+
+INSERT INTO Book (ISBNNO, Title, PID, Edition, Price, Quantity)
+VALUES
+('ISBN012', 'Book Title 4', 2, 1, 25.00, 20),
+('ISBN345', 'Book Title 5', 1, 2, 12.75, 35),
+('ISBN678', 'Book Title 6', 2, 1, 30.50, 45),
+('ISBN910', 'Book Title 7', 1, 3, 18.25, 60),
+('ISBN111', 'Book Title 8', 2, 2, 22.80, 28);
+
+INSERT INTO Book_Detail (BarCode, ISBNNO)
+VALUES
+(105, 'ISBN012'),
+(106, 'ISBN345'),
+(107, 'ISBN678'),
+(108, 'ISBN910'),
+(109, 'ISBN111');
+
+INSERT INTO Author (AuthorID, AName, AEmail)
+VALUES
+(1, 'John Doe', 'john@example.com'),
+(2, 'Jane Smith', 'jane@example.com'),
+(4, 'Emily Brown', 'emily@example.com'),
+(5, 'Michael Johnson', 'michael@example.com'),
+(6, 'Sophia Davis', 'sophia@example.com');
+
+
+INSERT INTO Publisher (PID, PubName, PCity, PEmail)
+VALUES
+(1, 'Publisher A', 'City A', 'pubA@example.com'),
+(2, 'Publisher B', 'City B', 'pubB@example.com'),
+(3, 'Publisher C', 'City C', 'pubC@example.com'),
+(4, 'Publisher D', 'City D', 'pubD@example.com'),
+(5, 'Publisher E', 'City E', 'pubE@example.com');
+
+INSERT INTO Student (SName, RollNo, Branch, Year, PRNNO)
+VALUES
+('Daniel', 4, 'Science', 2024, 1004),
+('Ella', 5, 'Engineering', 2023, 1005),
+('Finn', 6, 'Arts', 2022, 1006),
+('Grace', 7, 'Science', 2023, 1007),
+('Henry', 8, 'Engineering', 2024, 1008);
+
+INSERT INTO Issue (TRXID, PRNNO, BarCode, IssueDate, RetDate, Fine)
+VALUES
+(4, 1004, 105, '2024-02-10', '2024-03-05', 2.00),
+(5, 1005, 106, '2023-04-15', '2023-05-10', 3.50),
+(6, 1006, 107, '2022-11-20', '2022-12-15', 4.00),
+(7, 1007, 108, '2023-09-05', NULL, NULL),
+(8, 1008, 109, '2024-01-18', '2024-02-10', 2.75);
+
+INSERT INTO WrittenBy (AuthorID, ISBNNO)VALUES
+(4, 'ISBN012'),(5, 'ISBN345'),(5, 'ISBN678'),(6, 'ISBN910'),(6, 'ISBN111');
+
+
+
+SELECT *
+FROM Book
+WHERE CHAR_LENGTH(Title) >= 10;
+
+
+SELECT Title, Price
+FROM Book
+WHERE Price = (SELECT MIN(Price) FROM Book);
+
+
+SELECT SUM(Quantity) AS Total_Books
+FROM Book;
+
+
+SELECT PRNNO, BarCode
+FROM Issue
+WHERE IssueDate = RetDate;
+
+
+SELECT PRNNO, BarCode
+FROM Issue
+WHERE RetDate IS NULL;
+
+
+SELECT PRNNO, SUM(Fine) AS Total_Fine
+FROM Issue
+GROUP BY PRNNO;
+
+
+SELECT AVG(Fine) AS Average_Fine
+FROM Issue;
+

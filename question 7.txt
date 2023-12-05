@@ -1,0 +1,44 @@
+
+7Create following collection & write SQL  queries
+Teacher_id	Teacher_name	Branch	Sal	Status
+t01	Ravi	IT	20000	A
+t02	Anju	COMP	10000	A
+t03	Anil	IT	1000	NA
+t04	Ravi	IT	10000	NA
+t05	Raman	COMP	50000	A
+
+1.	Find the details of teacher having 10000 salary
+2.	Find the teacher with status A and salary 50000
+3.	Find the teacher salary > 20000
+4.	Find the teachers with status A with salary ascending
+5.	Count the total number of teachers 
+6.	Update the department of teachers to EnTc where salary greater than 20000
+7.	Increment the salary of teachers with 10000 whose status is “A”
+8.	Add a field called joining date in teacher_info collection
+9.	Delete teacher with id to4
+10.	Drop table teacher_info
+
+
+create table teacher_info (teacher_id varchar(50) primary key, teacher_name varchar(50), branch varchar(50), sal int, status char(2));
+
+insert into teacher_info values ('t01', 'Ravi', 'IT', 20000, 'A'),('t02', 'Anju', 'COMP', 10000, 'A'),('t03', 'Anil', 'IT', 1000, 'NA'),('t04', 'Ravi', 'IT', 10000, 'NA'),('t05', 'Raman', 'COMP', 50000, 'A');
+
+1)	select * from teacher_info where sal = 10000;
+
+2)	select * from teacher_info where status = 'A' and sal = 50000;
+
+3)	select teacher_name from teacher_info where sal > 20000;
+
+4)	select teacher_name from teacher_info where status = 'A' order by teacher_name asc;
+
+5)	select distinct count(teacher_id) as teacher_count from teacher_info;
+
+6)	update teacher_info set branch = 'ENTC' where sal > 20000;
+
+7)	update teacher_info set sal = sal + 10000 where status = 'A';
+
+8)	alter table teacher_info add column joinning_date date;
+
+9)	delete from teacher_info where teacher_id = 't04';
+
+10)	DROP TABLE teacher_info;

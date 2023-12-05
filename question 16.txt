@@ -1,0 +1,42 @@
+Employee(employee_name, street, city)
+Works(employee_name,company_name, salary)
+Company(company_name, city)
+Manages(employee_name, manager_name).
+Give an expression in SQL for each of the following;
+1.	Find the names of all employees who work for FBC.
+2.	Find the names, street address, and cities of residence of all employees who work FBC and earn more than $ 10,000.
+3.	Find all employees in the database who earn more than every employee of small bank corporation.
+4.	Find the company that has the smallest payroll.
+5.	Update the company_name where city is pune
+
+CREATE TABLE Employee (employee_name VARCHAR(50),street VARCHAR(50),city VARCHAR(50),PRIMARY KEY (employee_name));
+
+CREATE TABLE Works (employee_name VARCHAR(50),company_name VARCHAR(50),salary DECIMAL(10, 2),PRIMARY KEY (employee_name, company_name),FOREIGN KEY (employee_name) REFERENCES Employee(employee_name));
+
+CREATE TABLE Company (company_name VARCHAR(50),city VARCHAR(50),PRIMARY KEY (company_name));
+
+CREATE TABLE Manages (employee_name VARCHAR(50),manager_name VARCHAR(50),PRIMARY KEY (employee_name),FOREIGN KEY (employee_name) REFERENCES Employee(employee_name),FOREIGN KEY (manager_name) REFERENCES Employee(employee_name));
+
+INSERT INTO Employee VALUES ('John', 'Street1', 'City1'),('Jane', 'Street2', 'City2'),('Bob', 'Street3', 'City1');
+
+INSERT INTO Company VALUES ('FBC', 'City1'),('Small Bank Corporation', 'City2'),('ABC Corp', 'Pune');
+
+INSERT INTO Works VALUES ('John', 'FBC', 12000),('Jane', 'FBC', 15000),('Bob', 'Small Bank Corporation', 10000);
+
+INSERT INTO Manages VALUES ('John', 'Jane');
+
+
+SELECT employee_name FROM Works WHERE company_name = 'FBC';
+
+SELECT E.employee_name, E.street, E.city FROM Employee E JOIN Works W ON E.employee_name = W.employee_name WHERE W.company_name = 'FBC' AND W.salary > 10000;
+
+SELECT E.employee_name FROM Employee E
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Works W
+    WHERE W.company_name = 'Small Bank Corporation' AND W.salary >= E.employee_name
+);
+
+SELECT company_name FROM Works GROUP BY company_name ORDER BY SUM(salary) LIMIT 1;
+
+UPDATE Company SET company_name = 'XYZ Corp' WHERE city = 'Pune';

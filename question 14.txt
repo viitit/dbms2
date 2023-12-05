@@ -1,0 +1,31 @@
+14 Consider the given database:
+   Project (project_id, proj_name, chief_arch)
+Employee (emp_id, emp_name)
+Assigned_To (project_id , emp_id)
+Find the SQL queries for the following statements:
+1.	Get the employee number of employee working on project C353:
+2.	Get details of employees working on project C353:
+3.	Obtain details of employees working on database project
+4.	Get the employee number of employees who on all project.
+5.	Display Project_id,Proj_name,emp_id and emp_name
+create table Employee (emp_id integer primary key, emp_name varchar(50));
+
+create table Project (project_id integer primary key, proj_name varchar(50), chef_arch integer, foreign key (chef_arch) references Employee(emp_id));
+
+create table Assigned_To (project_id integer, emp_id integer, primary key (project_id, emp_id) , foreign key (project_id) references Project(project_id), foreign key (emp_id) references Employee(emp_id));
+
+INSERT INTO Employee (emp_id, emp_name) VALUES (101, 'John'), (102, 'Jane'), (103, 'Bob');
+
+INSERT INTO Project (project_id, proj_name, chef_arch) VALUES (1, 'C353', 101), (2, 'Database Project', 102), (3, 'Another Project', 103);
+
+INSERT INTO Assigned_To (project_id, emp_id) VALUES (1, 101), (1, 102), (1, 103),(2, 102), (2, 103), (3, 101), (3, 103);
+
+1.	SELECT emp_id FROM Assigned_To WHERE project_id = (SELECT project_id FROM Project WHERE proj_name = 'C353');
+
+2.	SELECT e.* FROM Employee e, Assigned_To a WHERE e.emp_id = a.emp_id AND a.project_id = (SELECT project_id FROM Project WHERE proj_name = 'C353');
+
+3.	SELECT e.* FROM Employee e, Assigned_To a WHERE e.emp_id = a.emp_id AND a.project_id = (SELECT project_id FROM Project WHERE proj_name = 'Database Project');
+
+4.	SELECT emp_id FROM Employee WHERE emp_id IN (SELECT emp_id FROM Assigned_To GROUP BY emp_id HAVING COUNT(DISTINCT project_id) = (SELECT COUNT(DISTINCT project_id) FROM Project));
+
+5.	SELECT p.project_id, p.proj_name, e.emp_id, e.emp_name FROM Project p, Assigned_To a, Employee e WHERE p.project_id = a.project_id AND e.emp_id = a.emp_id;

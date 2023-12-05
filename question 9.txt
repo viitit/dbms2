@@ -1,0 +1,36 @@
+9.  Consider following schema
+Student(Roll_no, Name, City)
+Subject(sub_code, sub_name)
+Marks(Roll_no, sub_code, marks)
+Write following queries in SQL
+1.	Find average marks of each student, along with the name of student.
+2.	Find how many students have failed in the subject “DBMS”.
+3.	Display Highest & lowest marks for every subject.
+4.	Find students with city staring from  ‘P’ 
+5.	Find students with city name ends with ‘Pur’
+6.	Display Subject Name, Highest & lowest marks scored.
+
+
+create table subject (sub_code varchar(50) primary key, sub_name varchar(50));
+
+create table subject (sub_code varchar(50) primary key, sub_name varchar(50));
+
+create table marks(roll_no integer foreign key references student(roll_no), sub_code integer foreign key references subject(sub_code), marks integer);
+
+1.	insert into subject values (1, "English"), (2, "Dbms");
+
+2.	insert into student values (1, "Rohan", "Pune"), (2, "Kartik", "Pahalgam"), (3, "Pratik", "hamlapur"), (4, "Parth", "Palampur");
+
+3.	insert into marks values (1, 1, 78), (1, 2, 23), (2, 1, 89),  (2, 2, 12), (3, 1, 98),  (3, 2, 78), (4, 1, 65),  (4, 2, 95);
+
+4.	select s.roll_no, s.name, avg(m.marks) as average_marks from student s, marks m where s.roll_no = m.roll_no group by s.roll_no, s.name;
+
+5.	select count(roll_no) as failed from marks where sub_code = 2 and marks < 40;
+
+6.	select s.sub_code, s.sub_name, max(m.marks) as highest, min(m.marks) as lowest from subject s, marks m where s.sub_code = m.sub_code group by s.sub_code, s.sub_name;
+
+7.	select * from student where city like 'P%';
+
+8.	select * from student where city like '%pur';
+
+9.	select s.sub_name, max(m.marks) as highest_marks, min(m.marks) as lowest_marks from subject s, marks m where s.sub_code = m.sub_code group by s.sub_name;

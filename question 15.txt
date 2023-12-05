@@ -1,0 +1,35 @@
+15 Consider Schema:
+Loan(loan_number,branch_name,amount,asset)
+Borrower(Customer_name,loan_number)
+a.Implements inner,left outer join,right outer  join & 
+b.Increase amount from loan table exceeds 10000 by 5% 
+c. Delete all account records at the specific branch
+d.Find out the borrower having amt greater than 1L.
+e.Find loan details from same branch.
+f.Find out customer name from same branch having amount less than 2L.
+g.Find the loan number and branch name having highest 3 assets values.
+
+CREATE TABLE Loan ( loan_number INT PRIMARY KEY, branch_name VARCHAR(50), amount DECIMAL(15, 2), assets INT);
+
+CREATE TABLE Borrower (customer_name VARCHAR(50), loan_number INT, PRIMARY KEY (customer_name, loan_number), FOREIGN KEY (loan_number) REFERENCES Loan(loan_number));
+
+INSERT INTO Loan (loan_number, branch_name, amount, assets) VALUES (1, 'BranchA', 120000, 50000),(2, 'BranchB', 80000, 30000),(3, 'BranchA', 150000, 70000),(4, 'BranchC', 90000, 40000),(5, 'BranchA', 8000, 2000);  
+
+INSERT INTO Borrower (customer_name, loan_number) VALUES ('John', 1),('Jane', 2),('Bob', 3)('Alice', 4),('Eve', 5);  
+a)	SELECT * FROM Loan l INNER JOIN Borrower b ON l.loan_number = b.loan_number;
+b)	UPDATE Loan SET amount = amount * 1.05 WHERE amount > 10000;
+c)	SELECT customer_name FROM Borrower WHERE loan_number IN (SELECT loan_number FROM Loan WHERE amount > 100000);
+d)	SELECT * FROM Loan WHERE branch_name = 'BranchA';
+e)	SELECT customer_name FROM Borrower WHERE loan_number IN (SELECT loan_number FROM Loan WHERE amount < 200000);
+f)	SELECT loan_number, branch_name FROM Loan ORDER BY assets DESC LIMIT 3;
+g)	DELETE FROM Loan WHERE branch_name = 'BranchB';
+
+h)	UPDATE Loan SET branch_name = 'BranchD' WHERE loan_number = 2;
+i)	INSERT INTO Loan (loan_number, branch_name, amount, assets) VALUES
+(6, 'BranchE', 200000, 90000);
+j)	INSERT INTO Borrower (customer_name, loan_number) VALUES
+('Charlie', 3), -- Corresponding to loan_number = 3 (Bob's loan)
+('David', 7);   -- Corresponding to a non-existent loan_number (loan_number = 7)
+k)	SELECT * FROM Loan l INNER JOIN Borrower b ON l.loan_number = b.loan_number;
+l)	SELECT * FROM Loan l LEFT JOIN Borrower b ON l.loan_number = b.loan_number;
+m)	SELECT * FROM Loan l RIGHT JOIN Borrower b ON l.loan_number = b.loan_number;

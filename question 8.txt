@@ -1,0 +1,34 @@
+8  Create following collection 
+Student(sid, sname, saddr, smarks, sage)
+Write Queries based on aggregation
+1.	Count the total number of students.
+2.	Count the number of students staying in pune
+3.	Display the different cities of students
+4.	group by address and show the result in decreasing order.
+5.	group by address and limit the result set to 2 rows
+6.	project increased marks of students by 100
+7.	project increased marks of students by 100 and decreased by 50
+8.	find the total marks of students grouped by city
+9.	Find the maximum and minimum marks student city wise
+
+create table student (sid int primary key, sname varchar(50), saddr varchar(50), marks int, sage int);
+
+insert into student values (1, 'John', 'Pune', 85, 22),(2, 'Alice', 'Mumbai', 75, 21),(3, 'Bob', 'Pune', 90, 23),(4, 'Eve', 'Delhi', 80, 20),(5, 'Charlie', 'Mumbai', 95, 22);
+
+1.	select count(sid) from student
+
+2.	select count(sid) from student  where saddr = 'Pune';
+
+3.	select distinct saddr from student;
+
+4.	select saddr  from student order by (saddr) asc;
+
+5.	select saddr from student  group by (saddr) limit 2;
+
+6.	select sname, (marks) + 100 as increased_marks from student;
+
+7.	select sname, marks + 100 - 50 as increased_marks from student;
+
+8.	select saddr , sum(marks) from student group by saddr;
+
+9.	select saddr, max(marks) as maximum_marks, min(marks) as minnimum_marks from student group by saddr;
